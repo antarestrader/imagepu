@@ -13,7 +13,13 @@ LOCAL = {host: "localhost"}
 
 begin
   AMQP.start(LOCAL) do
-    MQ.new.queue("worker_test").publish({name: "hello world", date: "today"}.to_json)
+    q = MQ.new.queue("worker_test")
+    q.publish({
+      source: "/tmp/_mg_6664.jpg", 
+      destination: "/tmp/result_mg_6664.jpg",
+      operation: "thumbnail",
+      account: "john_doe"
+    }.to_json)
     AMQP.stop { EM.stop }
   end
 rescue AMQP::Error => e
