@@ -2,6 +2,8 @@ require "rubygems"
 require "amqp"
 require "json"
 
+require "./dispatch"
+
 
 REMOTE = {
       port: 1419,
@@ -12,9 +14,12 @@ REMOTE = {
       
 LOCAL = {host: "localhost"}
 
-AMQP.start(LOCAL) do
-  q = MQ.new.queue("worker_test")
-  q.subscribe do |message|
+AMQP.start(LOCAL) do |con|
+#  q = MQ.new.queue("worker_test")
+ # q.subscribe do |message|
+ 
+  channel = AMQP::Channel.new(con)
+  channel.queue("worker_test").subscribe do |message|
     job = JSON.parse(message)
     puts "Dispatching"
     Dispatch.run job

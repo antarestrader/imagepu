@@ -1,3 +1,5 @@
+require "./thumbnail"
+
 class Dispatch
   def self.run(job)
     if job['operation'] == "thumbnail"
